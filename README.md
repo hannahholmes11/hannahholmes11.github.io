@@ -51,7 +51,7 @@
 
         // Fetch events from Google Calendar API
         try {
-            const response = await fetch(`https://www.googleapis.com/calendar/v3/calendars/${8410a6a2350f9164a421f17e230325dddfd9588dcd47612f57a0541d07575008@group.calendar.google.com}/events?key=${AIzaSyBrZ9Q078IvTAQCg17WUo57_JwJlE9Xdt0}`);
+            const response = await fetch(`https://www.googleapis.com/calendar/v3/calendars/${8410a6a2350f9164a421f17e230325dddfd9588dcd47612f57a0541d07575008}/events?key=${AIzaSyBrZ9Q078IvTAQCg17WUo57_JwJlE9Xdt0}`);
             const data = await response.json();
             
             // Check if the response has items
