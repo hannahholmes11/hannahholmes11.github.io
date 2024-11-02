@@ -1,27 +1,96 @@
-# Project Title
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Weekly Events Summary</title>
+    <style>
+        /* CSS for styling the widget */
+        .widget-container {
+            width: 100%;
+            max-width: 400px;
+            font-family: Arial, sans-serif;
+            background-color: #ffffff;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        .widget-header {
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 10px;
+            text-align: center;
+        }
+        .event-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+        .event-item {
+            margin-bottom: 12px;
+            border-bottom: 1px solid #f0f0f0;
+            padding-bottom: 8px;
+        }
+        .event-time {
+            color: #888;
+            font-size: 12px;
+        }
+    </style>
+</head>
+<body>
 
-A brief description of what your project does and who it's for.
+<div class="widget-container">
+    <div class="widget-header">This Week's Events</div>
+    <ul class="event-list" id="eventList"></ul>
+</div>
 
-## Table of Contents
+<script>
+    async function fetchGoogleCalendarEvents() {
+        // Fetch events from Google Calendar API
+        // Replace 'YOUR_CALENDAR_ID' with your actual Google Calendar ID, usually 'primary' for the main calendar
+        const response = await fetch('https://www.googleapis.com/calendar/v3/calendars/primary/events?key=AIzaSyBrZ9Q078IvTAQCg17WUo57_JwJlE9Xdt0');
+        const data = await response.json();
 
-- [About](#about)
-- [Getting Started](#getting-started)
-- [Usage](#usage)
-- [Contributing](#contributing)
-- [License](#license)
+        // Format the event data to display title and start time
+        return data.items.map(event => ({
+            title: event.summary,
+            time: new Date(event.start.dateTime || event.start.date).toLocaleString(),
+            source: 'Google Calendar'
+        }));
+    }
 
-## About
+    async function displayEvents() {
+        const eventList = document.getElementById('eventList');
+        eventList.innerHTML = 'Loading events...';
 
-Provide more context about the project, its purpose, and goals. Explain what problem it solves or what its main features are.
+        try {
+            // Fetch events from Google Calendar only
+            const googleEvents = await fetchGoogleCalendarEvents();
 
-## Getting Started
+            // Sort events by time
+            const sortedEvents = googleEvents.sort((a, b) => new Date(a.time) - new Date(b.time));
 
-These instructions will help you get a copy of the project up and running on your local machine.
+            // Display events in the widget
+            eventList.innerHTML = '';
+            sortedEvents.forEach(event => {
+                const listItem = document.createElement('li');
+                listItem.className = 'event-item';
+                listItem.innerHTML = `
+                    <div><strong>${event.title}</strong></div>
+                    <div class="event-time">${event.time}</div>
+                `;
+                eventList.appendChild(listItem);
+            });
+        } catch (error) {
+            console.error('Error loading events:', error);
+            eventList.innerHTML = 'Failed to load events.';
+        }
+    }
 
-### Prerequisites
+    displayEvents();
+</script>
 
-List any software, libraries, or other dependencies required to install the project.
+</body>
+</html>
 
-Example:
-```bash
-git, Node.js, npm
