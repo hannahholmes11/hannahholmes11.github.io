@@ -48,11 +48,11 @@
 <script>
    async function fetchGoogleCalendarEvents() {
         // Replace 'YOUR_CALENDAR_ID' with your actual Calendar ID found in Google Calendar settings
-        const calendarId = 'hannah.h.holmes@gmail.com'; // Replace this with your actual Calendar ID
+        const calendarId = '8410a6a2350f9164a421f17e230325dddfd9588dcd47612f57a0541d07575008@group.calendar.google.com'; // Replace this with your actual Calendar ID
         const apiKey = 'AIzaSyBrZ9Q078IvTAQCg17WUo57_JwJlE9Xdt0';
 
         // Fetch events from Google Calendar API
-        const response = await fetch(`https://www.googleapis.com/calendar/v3/calendars/${hannah.h.holmes@gmail.com}/events?key=${apiKey}`);
+        const response = await fetch(`https://www.googleapis.com/calendar/v3/calendars/${8410a6a2350f9164a421f17e230325dddfd9588dcd47612f57a0541d07575008@group.calendar.google.com}/events?key=${apiKey}`);
         const data = await response.json();
 
         // Format the event data to display title and start time
