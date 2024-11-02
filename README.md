@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Weekly Events Summary</title>
     <style>
-        /* CSS for styling the widget */
         .widget-container {
             width: 100%;
             max-width: 400px;
@@ -46,54 +45,43 @@
 </div>
 
 <script>
-   async function fetchGoogleCalendarEvents() {
-        // Replace 'YOUR_CALENDAR_ID' with your actual Calendar ID found in Google Calendar settings
-        const calendarId = '8410a6a2350f9164a421f17e230325dddfd9588dcd47612f57a0541d07575008@group.calendar.google.com'; // Replace this with your actual Calendar ID
-        const apiKey = 'AIzaSyBrZ9Q078IvTAQCg17WUo57_JwJlE9Xdt0';
+    async function fetchGoogleCalendarEvents() {
+        const calendarId = '8410a6a2350f9164a421f17e230325dddfd9588dcd47612f57a0541d07575008@group.calendar.google.com'; // Replace with your actual Calendar ID
+        const apiKey = 'AIzaSyBrZ9Q078IvTAQCg17WUo57_JwJlE9Xdt0'; // Replace with your actual API Key
 
         // Fetch events from Google Calendar API
-        const response = await fetch(`https://www.googleapis.com/calendar/v3/calendars/${8410a6a2350f9164a421f17e230325dddfd9588dcd47612f57a0541d07575008@group.calendar.google.com}/events?key=${apiKey}`);
-        const data = await response.json();
-
-        // Format the event data to display title and start time
-        return data.items.map(event => ({
-            title: event.summary,
-            time: new Date(event.start.dateTime || event.start.date).toLocaleString(),
-            source: 'Google Calendar'
-        }));
-    }
-
-    async function displayEvents() {
-        const eventList = document.getElementById('eventList');
-        eventList.innerHTML = 'Loading events...';
-
         try {
-            // Fetch events from Google Calendar only
-            const googleEvents = await fetchGoogleCalendarEvents();
+            const response = await fetch(`https://www.googleapis.com/calendar/v3/calendars/${8410a6a2350f9164a421f17e230325dddfd9588dcd47612f57a0541d07575008@group.calendar.google.com}/events?key=${AIzaSyBrZ9Q078IvTAQCg17WUo57_JwJlE9Xdt0}`);
+            const data = await response.json();
+            
+            // Check if the response has items
+            if (data.items && data.items.length > 0) {
+                const eventList = document.getElementById('eventList');
+                eventList.innerHTML = ''; // Clear any previous contents
 
-            // Sort events by time
-            const sortedEvents = googleEvents.sort((a, b) => new Date(a.time) - new Date(b.time));
-
-            // Display events in the widget
-            eventList.innerHTML = '';
-            sortedEvents.forEach(event => {
-                const listItem = document.createElement('li');
-                listItem.className = 'event-item';
-                listItem.innerHTML = `
-                    <div><strong>${event.title}</strong></div>
-                    <div class="event-time">${event.time}</div>
-                `;
-                eventList.appendChild(listItem);
-            });
+                // Display each event in the widget
+                data.items.forEach(event => {
+                    const listItem = document.createElement('li');
+                    listItem.className = 'event-item';
+                    listItem.innerHTML = `
+                        <div><strong>${event.summary || 'No Title'}</strong></div>
+                        <div class="event-time">${new Date(event.start.dateTime || event.start.date).toLocaleString()}</div>
+                    `;
+                    eventList.appendChild(listItem);
+                });
+            } else {
+                console.error('No events found or an error occurred:', data);
+                document.getElementById('eventList').innerHTML = 'No events found for this week.';
+            }
         } catch (error) {
             console.error('Error loading events:', error);
-            eventList.innerHTML = 'Failed to load events.';
+            document.getElementById('eventList').innerHTML = 'Failed to load events.';
         }
     }
 
-    displayEvents();
+    // Run the function to fetch and display events
+    fetchGoogleCalendarEvents();
 </script>
 
 </body>
 </html>
-
